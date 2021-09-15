@@ -1,0 +1,42 @@
+<server description="openliberty-uber-jar-app">
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>jsonp-1.1</feature>
+        <feature>cdi-2.0</feature>
+        <feature>mpConfig-2.0</feature>
+        <feature>mpHealth-3.0</feature>
+        <!-- <feature>mpMetrics-3.0</feature> -->
+        <feature>mpOpenTracing-2.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <!-- https://openliberty.io/docs/21.0.0.8/reference/config/server-configuration-overview.html#variable-substitution -->
+    <variable name="default.http.port" defaultValue="-1"/>
+    <variable name="default.https.port" defaultValue="9443"/>
+    <!-- Environment variable HTTS_PKCS12_KEYSTORE_PATH should populate this -->
+    <variable name="https.pkcs12.keystore.path" defaultValue="unknown"/>
+    <!-- Environment variable HTTS_PKCS12_KEYSTORE_PASSWORD should populate this -->
+    <variable name="https.pkcs12.keystore.password" defaultValue="unknown"/>
+    <!-- Environment variable HTTS_PKCS12_KEY_PASSWORD should populate this -->
+    <variable name="https.pkcs12.key.password" defaultValue="unknown"/>
+
+    <webApplication location="openliberty-uber-jar-war.war" contextRoot="/"/>
+
+    <applicationManager startTimeout="45s"/>
+    <!-- <mpMetrics authentication="false"/> -->
+
+    <!-- https://www.ibm.com/docs/en/was-liberty/nd?topic=configuration-httpendpoint -->
+    <!-- -1 to disable a given endpoint -->
+    <httpEndpoint host="*" id="defaultHttpEndpoint"
+        httpPort="${default.http.port}"
+        httpsPort="${default.https.port}"/>
+
+    <!-- See https://www.ibm.com/docs/en/was-liberty/base?topic=liberty-enabling-ssl-communication-in -->
+    <!-- This relies on <feature>transportSecurity-1.0</feature> -->
+    <!-- https://www.ibm.com/docs/en/was-liberty/nd?topic=configuration-keystore -->
+    <keyStore id="defaultKeyStore" readOnly="true" type="PKCS12"
+        location="${https.pkcs12.keystore.path}"
+        password="${https.pkcs12.keystore.password}">
+        <keyEntry name="https-pkcs12-key-alias" keyPassword="${https.pkcs12.key.password}"/>
+    </keyStore>
+</server>

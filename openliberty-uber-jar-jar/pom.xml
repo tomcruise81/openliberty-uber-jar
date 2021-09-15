@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>openliberty-uber-jar-jar</artifactId>
+    <!-- Due to a bug in io.openliberty.tools.liberty-maven-plugin, this needs to be omitted -->
+    <!-- <packaging>jar</packaging> -->
+
+    <name>openliberty-uber-jar-jar</name>
+	<description>Sample OpenLiberty Uber JAR</description>
+
+    <parent>
+        <groupId>org.sample</groupId>
+        <artifactId>openliberty-uber-jar</artifactId>
+        <version>0.2.${revision}</version>
+    </parent>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+
+        <plugins>
+            <!-- Enable liberty-maven plugin -->
+            <plugin>
+                <groupId>io.openliberty.tools</groupId>
+                <artifactId>liberty-maven-plugin</artifactId>
+                <version>3.3.4</version>
+                <!-- <extensions>true</extensions> -->
+                <!-- This causes mvn package to create a runnable JAR file -->
+                <executions>
+                    <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <!-- <goal>deploy</goal> -->
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <packageType>jar</packageType>
+                            <include>all,runnable</include>
+                            <!-- Undocumented feature to allow for Maven packaging to be utilized -->
+                            <attach>true</attach>
+                            <!-- Reference the WAR module -->
+                            <installDirectory>../openliberty-uber-jar-war/target/liberty/wlp</installDirectory>
+                            <serverName>defaultServer</serverName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
